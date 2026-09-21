@@ -1,0 +1,118 @@
+/* ==========================================
+   1. Theme Variables (Light & Dark)
+   ========================================== */
+:root {
+    --primary-color: #4f46e5;
+    --primary-hover: #4338ca;
+    --primary-soft: #eef2ff;
+    --success-soft: #ecfdf5;
+    --warning-soft: #fffbeb;
+    --danger-soft: #fef2f2;
+    --bg-body: #f8fafc;
+    --card-bg: #ffffff;
+    --text-dark: #1e293b;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --input-bg: #ffffff;
+    --navbar-bg: #ffffff;
+}
+
+body.dark-mode {
+    --bg-body: #0f172a;
+    --card-bg: #1e293b;
+    --text-dark: #f8fafc;
+    --text-muted: #94a3b8;
+    --border-color: #334155;
+    --input-bg: #0f172a;
+    --navbar-bg: #1e293b;
+
+    --primary-soft: #1e1b4b;
+    --success-soft: #064e3b;
+    --warning-soft: #451a03;
+    --danger-soft: #450a0a;
+}
+
+/* ==========================================
+   2. Global Override Rules
+   ========================================== */
+body {
+    font-family: 'Inter', sans-serif;
+    background-color: var(--bg-body) !important;
+    color: var(--text-dark) !important;
+    transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+h1, h2, h3, h4, h5, h6, strong, b, label, span, p {
+    color: var(--text-dark);
+}
+
+.text-dark {
+    color: var(--text-dark) !important;
+}
+
+.text-muted, .text-secondary {
+    color: var(--text-muted) !important;
+}
+
+/* Navbar */
+.navbar {
+    background-color: var(--navbar-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+.user-pill {
+    background-color: var(--card-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Dark Mode Toggle Button */
+.theme-btn {
+    background-color: var(--card-bg);
+    border: 1px solid var(--border-color);
+    color: var(--text-dark);
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.theme-btn:hover {
+    background-color: var(--primary-soft);
+}
+
+/* Buttons */
+.btn-primary {
+    background-color: var(--primary-color) !important;
+    border-color: var(--primary-color) !important;
+    color: #ffffff !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-hover) !important;
+    border-color: var(--primary-hover) !important;
+}
+
+.btn-hover-effect {
+    transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn-hover-effect:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 4px 12px rgba(79, 70, 229, 0.25);
+}
+
+/* Form Controls & Inputs */
+.form-control, .form-select, .input-group-text {
+    background-color: var(--input-bg) !important;
+    color: var(--text-dark) !important;
+    border-color: var(--border-color) !important;
+}
+
+.form-control::placeholder {
+    color: var(--text-muted) !important;
+}
+
+.form-control:focus, .form-select:focus {
+    background-color: var(--input-bg) !important;
+    color: var(--text-dark) !important;
+    border-color: var(--primary-color) !important;
+    box-shadow: 0 0 0 0.25rem rgba(79, 70, 229, 0.15);
+}

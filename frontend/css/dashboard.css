@@ -1,0 +1,105 @@
+/* ==========================================
+   Dashboard Specific Styles
+   ========================================== */
+.dashboard-body {
+    padding-top: 80px;
+}
+
+.shadow-sm-custom {
+    box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px 0 rgba(0, 0, 0, 0.03);
+}
+
+.page-content {
+    max-width: 960px;
+}
+
+/* Cards Overrides */
+.card, .stat-card, .task-card {
+    background-color: var(--card-bg) !important;
+    color: var(--text-dark) !important;
+    border: 1px solid var(--border-color) !important;
+}
+
+/* Stat Card Soft Backgrounds */
+.bg-primary-soft { background-color: var(--primary-soft) !important; }
+.bg-warning-soft { background-color: var(--warning-soft) !important; }
+.bg-success-soft { background-color: var(--success-soft) !important; }
+.bg-danger-soft { background-color: var(--danger-soft) !important; }
+.bg-orange-soft { background-color: var(--warning-soft) !important; }
+
+.text-orange { color: #ea580c !important; }
+
+.stat-icon {
+    width: 48px;
+    height: 48px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.stat-card {
+    border-radius: 1rem;
+    transition: transform 0.2s ease, background-color 0.3s ease;
+}
+
+.clickable-stat {
+    cursor: pointer;
+    user-select: none;
+    transition: all 0.2s ease-in-out;
+}
+
+.clickable-stat:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15) !important;
+}
+
+.clickable-stat:active {
+    transform: translateY(-1px);
+}
+
+/* Task Cards */
+.task-card {
+    border-radius: 1rem;
+    transition: all 0.2s ease;
+}
+
+.task-card:hover {
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12) !important;
+    transform: translateY(-1px);
+}
+
+.completed-task {
+    opacity: 0.75;
+}
+
+.completed-title {
+    text-decoration: line-through;
+    color: var(--text-muted) !important;
+}
+
+/* Task Action Buttons (Edit/Delete) in Dark Mode */
+.task-card .btn-light {
+    background-color: var(--input-bg) !important;
+    border-color: var(--border-color) !important;
+}
+
+/* Custom Toast Notification */
+.toast-custom {
+    position: fixed;
+    top: 90px;
+    right: 20px;
+    z-index: 1060;
+    padding: 12px 20px;
+    border-radius: 10px;
+    color: #fff;
+    font-weight: 500;
+    font-size: 0.9rem;
+    box-shadow: 0 10px 25px -5px rgba(0,0,0,0.2);
+    animation: slideIn 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+}
+
+@keyframes slideIn {
+    from { transform: translateX(100%); opacity: 0; }
+    to { transform: translateX(0); opacity: 1; }
+}
