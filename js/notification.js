@@ -1,7 +1,11 @@
 const VAPID_PUBLIC_KEY =
     "BFFFprRbDqSUgpdgu32puCJN_NBusRFJSGs4ar4LIkFAmXEiJcIDJ9q-_EI5MlmYE0mdsz0dYr7_IebqOyjrcjc";
 
-const API_URL = "https://todo-list-project-1-ge3z.onrender.com";
+const API_URL =
+    "https://todo-list-project-1-ge3z.onrender.com";
+
+const SITE_BASE_PATH =
+    "/todo-list-project/";
 
 // ==========================================
 // CONVERT VAPID KEY
@@ -39,9 +43,15 @@ async function enablePushNotifications() {
     try {
 
         console.log(
-            "Notification permission before:",
-            Notification.permission
+            "================================="
         );
+
+        console.log(
+            "Starting notification setup..."
+        );
+
+        console.log(
+            "=================================");
 
 
         // ======================================
@@ -57,6 +67,11 @@ async function enablePushNotifications() {
             return;
         }
 
+        console.log(
+            "Notification permission before:",
+            Notification.permission
+        );
+
 
         // ======================================
         // CHECK SERVICE WORKER SUPPORT
@@ -65,7 +80,21 @@ async function enablePushNotifications() {
         if (!("serviceWorker" in navigator)) {
 
             alert(
-                "Service Worker is not supported."
+                "Service Worker is not supported by this browser."
+            );
+
+            return;
+        }
+
+
+        // ======================================
+        // CHECK PUSH MANAGER SUPPORT
+        // ======================================
+
+        if (!("PushManager" in window)) {
+
+            alert(
+                "Push notifications are not supported by this browser."
             );
 
             return;
@@ -83,7 +112,6 @@ async function enablePushNotifications() {
             "Notification permission result:",
             permission
         );
-
 
         if (permission !== "granted") {
 
@@ -103,18 +131,20 @@ async function enablePushNotifications() {
             "Registering Service Worker..."
         );
 
+        const serviceWorkerPath =
+            SITE_BASE_PATH +
+            "service-worker.js";
 
         const registration =
             await navigator.serviceWorker.register(
-                "/todo-list-project/service-worker.js",
+                serviceWorkerPath,
                 {
-                    scope: "/todo-list-project/"
+                    scope: SITE_BASE_PATH
                 }
             );
 
-
         console.log(
-            "Service Worker registered:",
+            "Service Worker registered successfully:",
             registration
         );
 
@@ -138,7 +168,6 @@ async function enablePushNotifications() {
             await registration.pushManager
                 .getSubscription();
 
-
         if (subscription) {
 
             console.log(
@@ -148,9 +177,8 @@ async function enablePushNotifications() {
         } else {
 
             console.log(
-                "No existing subscription found."
+                "No existing push subscription found."
             );
-
         }
 
 
@@ -164,7 +192,6 @@ async function enablePushNotifications() {
                 "Creating new push subscription..."
             );
 
-
             subscription =
                 await registration.pushManager
                     .subscribe({
@@ -175,20 +202,17 @@ async function enablePushNotifications() {
                             urlBase64ToUint8Array(
                                 VAPID_PUBLIC_KEY
                             )
-
                     });
-
 
             console.log(
                 "New push subscription created."
             );
-
         }
 
 
         // ======================================
-        // SHOW SUBSCRIPTION
-        // ==========================================
+        // SHOW SUBSCRIPTION DETAILS
+        // ======================================
 
         console.log(
             "Push subscription:",
@@ -196,13 +220,12 @@ async function enablePushNotifications() {
         );
 
 
-        // ==========================================
+        // ======================================
         // GET LOGIN TOKEN
-        // ==========================================
+        // ======================================
 
         const token =
             localStorage.getItem("token");
-
 
         if (!token) {
 
@@ -217,20 +240,18 @@ async function enablePushNotifications() {
             return;
         }
 
-
         console.log(
             "Login token found."
         );
 
 
-        // ==========================================
+        // ======================================
         // SAVE SUBSCRIPTION TO BACKEND
-        // ==========================================
+        // ======================================
 
         console.log(
             "Saving subscription to backend..."
         );
-
 
         const response =
             await fetch(
@@ -246,27 +267,40 @@ async function enablePushNotifications() {
 
                         "Authorization":
                             `Bearer ${token}`
-
                     },
 
                     body: JSON.stringify({
 
                         subscription:
                             subscription.toJSON()
-
                     })
-
                 }
             );
 
 
-        // ==========================================
+        // ======================================
         // READ BACKEND RESPONSE
-        // ==========================================
+        // ======================================
 
-        const data =
-            await response.json();
+        let data = {};
 
+        try {
+
+            data =
+                await response.json();
+
+        } catch (jsonError) {
+
+            console.error(
+                "Backend did not return valid JSON:",
+                jsonError
+            );
+        }
+
+        console.log(
+            "Backend status:",
+            response.status
+        );
 
         console.log(
             "Backend response:",
@@ -274,49 +308,59 @@ async function enablePushNotifications() {
         );
 
 
-        // ==========================================
+        // ======================================
         // BACKEND ERROR
-        // ==========================================
+        // ======================================
 
         if (!response.ok) {
 
             throw new Error(
                 data.message ||
-                "Failed to save subscription."
+                `Backend error: ${response.status}`
             );
-
         }
 
 
-        // ==========================================
+        // ======================================
         // SUCCESS
-        // ==========================================
+        // ======================================
+
+        console.log(
+            "================================="
+        );
 
         console.log(
             "Push subscription saved successfully."
         );
 
+        console.log(
+            "================================="
+        );
 
         alert(
             "🔔 Notifications enabled successfully!"
         );
 
-
     } catch (error) {
+
+        console.error(
+            "================================="
+        );
 
         console.error(
             "Notification setup error:",
             error
         );
 
+        console.error(
+            "================================="
+        );
 
         alert(
             "Notification setup failed: " +
             error.message
         );
-
     }
-
 }
 
 
@@ -333,7 +377,6 @@ document.addEventListener(
                 "enable-notifications"
             );
 
-
         if (button) {
 
             button.addEventListener(
@@ -342,7 +385,7 @@ document.addEventListener(
             );
 
             console.log(
-                "Notification button connected."
+                "Enable Notifications button connected."
             );
 
         } else {
@@ -350,8 +393,6 @@ document.addEventListener(
             console.log(
                 "Enable Notifications button not found."
             );
-
         }
-
     }
 );
