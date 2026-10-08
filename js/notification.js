@@ -106,9 +106,9 @@ async function enablePushNotifications() {
 
         const registration =
             await navigator.serviceWorker.register(
-                "/service-worker.js",
+                "/todo-list-project/service-worker.js",
                 {
-                    scope: "/"
+                    scope: "/todo-list-project/"
                 }
             );
 
@@ -188,7 +188,7 @@ async function enablePushNotifications() {
 
         // ======================================
         // SHOW SUBSCRIPTION
-        // ======================================
+        // ==========================================
 
         console.log(
             "Push subscription:",
@@ -196,9 +196,9 @@ async function enablePushNotifications() {
         );
 
 
-        // ======================================
+        // ==========================================
         // GET LOGIN TOKEN
-        // ======================================
+        // ==========================================
 
         const token =
             localStorage.getItem("token");
@@ -223,9 +223,9 @@ async function enablePushNotifications() {
         );
 
 
-        // ======================================
+        // ==========================================
         // SAVE SUBSCRIPTION TO BACKEND
-        // ======================================
+        // ==========================================
 
         console.log(
             "Saving subscription to backend..."
@@ -260,9 +260,9 @@ async function enablePushNotifications() {
             );
 
 
-        // ======================================
+        // ==========================================
         // READ BACKEND RESPONSE
-        // ======================================
+        // ==========================================
 
         const data =
             await response.json();
@@ -274,9 +274,9 @@ async function enablePushNotifications() {
         );
 
 
-        // ======================================
+        // ==========================================
         // BACKEND ERROR
-        // ======================================
+        // ==========================================
 
         if (!response.ok) {
 
@@ -288,9 +288,9 @@ async function enablePushNotifications() {
         }
 
 
-        // ======================================
+        // ==========================================
         // SUCCESS
-        // ======================================
+        // ==========================================
 
         console.log(
             "Push subscription saved successfully."
