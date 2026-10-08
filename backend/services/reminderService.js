@@ -22,14 +22,12 @@ const checkTaskReminders = async () => {
 
         console.log(
             "Checking task reminders:",
-            now.toLocaleString("en-IN", {
-                timeZone: "Asia/Kolkata"
-            })
+            now.toLocaleString("en-IN")
         );
 
 
         // ==========================================
-        // FIND PENDING TASKS
+        // FIND PENDING TASKS WITH REMINDER DETAILS
         // ==========================================
 
         const tasks = await Task.find({
@@ -41,19 +39,11 @@ const checkTaskReminders = async () => {
             },
 
             dueTime: {
-                $ne: ""
+                $exists: true,
+                $nin: ["", null]
             },
 
-            $or: [
-                {
-                    reminderSent: false
-                },
-                {
-                    reminderSent: {
-                        $exists: false
-                    }
-                }
-            ]
+            reminderSent: false
 
         });
 
@@ -65,21 +55,7 @@ const checkTaskReminders = async () => {
 
 
         // ==========================================
-        // NO TASKS
-        // ==========================================
-
-        if (tasks.length === 0) {
-
-            console.log(
-                "No pending reminder tasks found."
-            );
-
-            return;
-        }
-
-
-        // ==========================================
-        // PROCESS TASKS
+        // PROCESS EACH TASK
         // ==========================================
 
         for (const task of tasks) {
@@ -102,15 +78,30 @@ const checkTaskReminders = async () => {
 
 
                 // ======================================
-                // CREATE DATE
+                // CHECK DUE DATE
                 // ======================================
+
+                if (!task.dueDate) {
+
+                    console.log(
+                        "⏭️ Skipping task because due date is missing:",
+                        task.title
+                    );
+
+                    continue;
+                }
+
 
                 const dueDate =
                     new Date(task.dueDate);
 
 
+                // ======================================
+                // VALIDATE DUE DATE
+                // ======================================
+
                 if (
-                    Number.isNaN(
+                    isNaN(
                         dueDate.getTime()
                     )
                 ) {
@@ -125,13 +116,26 @@ const checkTaskReminders = async () => {
 
 
                 // ======================================
+                // CHECK DUE TIME
+                // ======================================
+
+                if (!task.dueTime) {
+
+                    console.log(
+                        "⏭️ Skipping task because due time is not set:",
+                        task.title
+                    );
+
+                    continue;
+                }
+
+
+                // ======================================
                 // READ DUE TIME
                 // ======================================
 
                 const timeParts =
-                    String(task.dueTime)
-                        .trim()
-                        .split(":");
+                    String(task.dueTime).split(":");
 
 
                 const hours =
@@ -142,7 +146,7 @@ const checkTaskReminders = async () => {
 
 
                 // ======================================
-                // VALIDATE TIME
+                // VALIDATE DUE TIME
                 // ======================================
 
                 if (
@@ -176,7 +180,7 @@ const checkTaskReminders = async () => {
 
 
                 // ======================================
-                // REMINDER MINUTES
+                // GET REMINDER MINUTES
                 // ======================================
 
                 let reminderMinutes =
@@ -193,6 +197,7 @@ const checkTaskReminders = async () => {
                 ) {
 
                     reminderMinutes = 10;
+
                 }
 
 
@@ -212,29 +217,17 @@ const checkTaskReminders = async () => {
 
 
                 // ======================================
-                // LOG ALL TIMES
+                // LOG TIME INFORMATION
                 // ======================================
 
                 console.log(
                     "Current Time:",
-                    now.toLocaleString(
-                        "en-IN",
-                        {
-                            timeZone:
-                                "Asia/Kolkata"
-                        }
-                    )
+                    now.toLocaleString("en-IN")
                 );
 
                 console.log(
-                    "Due Date:",
-                    dueDate.toLocaleString(
-                        "en-IN",
-                        {
-                            timeZone:
-                                "Asia/Kolkata"
-                        }
-                    )
+                    "Due Time:",
+                    dueDate.toLocaleString("en-IN")
                 );
 
                 console.log(
@@ -244,18 +237,12 @@ const checkTaskReminders = async () => {
 
                 console.log(
                     "Reminder Time:",
-                    reminderTime.toLocaleString(
-                        "en-IN",
-                        {
-                            timeZone:
-                                "Asia/Kolkata"
-                        }
-                    )
+                    reminderTime.toLocaleString("en-IN")
                 );
 
 
                 // ======================================
-                // CHECK REMINDER TIME
+                // CHECK WHETHER REMINDER TIME REACHED
                 // ======================================
 
                 const reminderReached =
@@ -270,7 +257,7 @@ const checkTaskReminders = async () => {
 
 
                 // ======================================
-                // NOT YET TIME
+                // REMINDER NOT YET REACHED
                 // ======================================
 
                 if (!reminderReached) {
@@ -284,7 +271,7 @@ const checkTaskReminders = async () => {
 
 
                 // ======================================
-                // REMINDER REACHED
+                // REMINDER TIME REACHED
                 // ======================================
 
                 console.log(
@@ -298,17 +285,19 @@ const checkTaskReminders = async () => {
 
 
                 // ======================================
-                // FIND PUSH SUBSCRIPTION
+                // FIND USER PUSH SUBSCRIPTION
                 // ======================================
 
                 const subscription =
                     await PushSubscription.findOne({
+
                         user: task.user
+
                     });
 
 
                 // ======================================
-                // SUBSCRIPTION NOT FOUND
+                // NO SUBSCRIPTION
                 // ======================================
 
                 if (!subscription) {
@@ -351,7 +340,7 @@ const checkTaskReminders = async () => {
 
                 // ======================================
                 // NOTIFICATION PAYLOAD
-                // ======================================
+                // ==========================================
 
                 const payload = {
 
@@ -373,14 +362,14 @@ const checkTaskReminders = async () => {
                 };
 
 
+                // ======================================
+                // SEND PUSH NOTIFICATION
+                // ======================================
+
                 console.log(
                     "📤 Sending push notification..."
                 );
 
-
-                // ======================================
-                // SEND NOTIFICATION
-                // ======================================
 
                 const sent =
                     await sendPushNotification(
@@ -390,7 +379,7 @@ const checkTaskReminders = async () => {
 
 
                 // ======================================
-                // SUCCESS
+                // PUSH SUCCESS
                 // ======================================
 
                 if (sent) {
@@ -426,7 +415,7 @@ const checkTaskReminders = async () => {
 
                 console.error(
                     "❌ Error processing task:",
-                    task._id.toString(),
+                    task._id,
                     taskError.message
                 );
 
