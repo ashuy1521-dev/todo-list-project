@@ -2,7 +2,7 @@ const VAPID_PUBLIC_KEY =
     "BFFFprRbDqSUgpdgu32puCJN_NBusRFJSGs4ar4LIkFAmXEiJcIDJ9q-_EI5MlmYE0mdsz0dYr7_IebqOyjrcjc";
 
 const API_URL =
-    "https://todo-list-project-1-ge3z.onrender.com";
+    "https://todo-list-project-s945.onrender.com";
 
 const SITE_BASE_PATH =
     "/todo-list-project/";
